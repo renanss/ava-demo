@@ -25,7 +25,7 @@ const walletService = new WalletService(RPC_URL, USE_MOCK_DATA);
 
 // List of registered wallet addresses (in a real implementation, this would come from a database)
 const registeredAddresses = [
-  '0xed387993de4de335C4532Aaa1E722036eA51aFF7', // Add your test wallet address here
+  process.env.OPERATOR_ADDRESS || '0xafB4FfF454A87e576b149CEB22fd532599BB4467', // Our operator address
 ];
 
 async function getKey(call: any, callback: any) {

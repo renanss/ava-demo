@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
+import { ethers } from 'ethers';
+import fs from 'fs';
 
 interface Operator {
   operatorId: string;
@@ -56,11 +58,18 @@ export async function GET() {
     );
 
     try {
-      // For testing, we'll use a demo signature
-      const walletAddress = process.env.AVA_WALLET_ADDRESS || '0x0';
+      // Load and decrypt the ECDSA key
+      const keyPath = path.join(process.env.HOME || '', '.eigenlayer/operator_keys/test5.ecdsa.key.json');
+      const keyData = JSON.parse(fs.readFileSync(keyPath, 'utf8'));
+      const wallet = await ethers.Wallet.fromEncryptedJson(
+        JSON.stringify(keyData),
+        process.env.OPERATOR_PRIVATE_KEY || ''
+      );
+
+      const walletAddress = wallet.address;
       const expiredAt = Math.floor(Date.now() / 1000 + 3600); // 1 hour from now
       const message = `key request for ${walletAddress} expired at ${expiredAt}`;
-      const demoSignature = '0x1234567890'; // This will work in mock mode
+      const signature = await wallet.signMessage(message);
 
       // Authenticate with signature
       const authResponse = await new Promise((resolve, reject) => {
@@ -68,7 +77,7 @@ export async function GET() {
           {
             owner: walletAddress,
             expired_at: expiredAt,
-            signature: demoSignature
+            signature
           },
           (error: Error | null, response: { key: string }) => {
             if (error) reject(error);
