@@ -38,6 +38,19 @@ NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=your_project_id_here
 npm run dev
 ```
 
+
+## Generate Keys
+
+```bash
+docker run -it --rm -v ~/.eigenlayer:/root/.eigenlayer ubuntu:latest bash -c "apt-get update && apt-get install -y curl && curl -sSfL https://raw.githubusercontent.com/layr-labs/eigenlayer-cli/master/scripts/install.sh | sh -s && export PATH=\$PATH:~/bin && echo 'password123' | eigenlayer keys create --key-type ecdsa --insecure test5 && eigenlayer keys show test5"
+```
+
+```bash
+docker run -it --rm -v ~/.eigenlayer:/root/.eigenlayer ubuntu:latest cat /root/.eigenlayer/operator_keys/test5.ecdsa.key.json
+```
+
+
+
 5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Project Structure
