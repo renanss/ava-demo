@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package aggregator;
+
+service Aggregator {
+  rpc GetKey(KeyRequest) returns (KeyResponse) {}
+  rpc ListWallets(ListWalletsRequest) returns (ListWalletsResponse) {}
+}
+
+message KeyRequest {
+  string owner = 1;
+  int64 expired_at = 2;
+  string signature = 3;
+}
+
+message KeyResponse {
+  string key = 1;
+}
+
+message ListWalletsRequest {}
+
+message ListWalletsResponse {
+  repeated Wallet items = 1;
+}
+
+message Wallet {
+  string address = 1;
+  string balance = 2;
+} 
